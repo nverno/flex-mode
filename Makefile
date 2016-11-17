@@ -13,7 +13,7 @@ OUTPUT     = test/test.output
 CC         = g++
 flex       = flex ${FFLAGS}
 
-.PHONY: clean distclean test
+.PHONY: clean distclean test README.md
 all: test
 test: 
 	$(emacs) -Q -batch -L . -l ert -l test/flex-tests.el \
@@ -26,7 +26,7 @@ ${CGEN}: ${FSRC}
 	${flex} ${FSRC}
 
 README.md: el2markdown.el flex-mode.el
-	$(emacs) -batch -l $< $(el) -f el2markdown-write-readme
+	$(emacs) -batch -l $< flex-mode.el -f el2markdown-write-readme
 	$(RM) $@~
 
 .INTERMEDIATE: el2markdown.el

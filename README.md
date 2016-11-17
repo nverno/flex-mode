@@ -1,9 +1,7 @@
-# flex-mode - Emacs major mode for flex files
-
 *Author:* Noah Peart <noah.v.peart@gmail.com><br>
-*URL:* [http://github.com/nverno/flex-mode](http://github.com/nverno/flex-mode)<br>
+*URL:* [https://github.com/nverno/flex-mode](https://github.com/nverno/flex-mode)<br>
 
-Emacs major mode for editing flex files derived from `c-mode`.
+[![Build Status](https://travis-ci.org/nverno/flex-mode.svg?branch=master)](https://travis-ci.org/nverno/flex-mode)
 
 
 ---
