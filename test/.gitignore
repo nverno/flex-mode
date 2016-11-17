@@ -1,0 +1,7 @@
+*~
+*.elc
+*.o
+*.exe
+*.s
+lex.y.cc
+lexer*
