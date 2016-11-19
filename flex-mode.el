@@ -33,6 +33,7 @@
 (eval-when-compile
   (require 'derived))
 (require 'cc-mode)
+(autoload 'flex-src-edit "flex-src")
 
 (defgroup flex nil
   "Major mode for flex files."
@@ -72,8 +73,21 @@
   "Align declarations in region."
   (interactive))
 
-;; ------------------------------------------------------------
-;;* Major Mode
+;;; Navigate
+
+;; jump to next section
+(defun flex-next-section ()
+  (interactive)
+  (re-search-forward "%[%}{]" nil 'move))
+
+(defun flex-previous-section ()
+  (interactive)
+  (re-search-backward "%[%}{]" nil 'move))
+
+(define-key flex-mode-map (kbd "M-N") 'flex-next-section)
+(define-key flex-mode-map (kbd "M-P") 'flex-previous-section)
+
+;;--- Major Mode -----------------------------------------------------
 
 ;; Menu
 (defvar flex-menu
@@ -84,13 +98,13 @@
 
 ;; Map
 (defvar flex-mode-map
-  (let ((map (make-sparse-keymap)))
-    (easy-menu-define nil map nil flex-menu)
-    (define-key map "{"         #'self-insert-command)
-    (define-key map "}"         #'self-insert-command)
-    (define-key map (kbd "TAB") #'flex-indent-command)
-    map)
-  "Flex mode map.")
+  (let ((km (make-sparse-keymap)))
+    (easy-menu-define nil km nil flex-menu)
+    (define-key km (kbd "C-c '") #'flex-src-edit)
+    (define-key km "{"           #'self-insert-command)
+    (define-key km "}"           #'self-insert-command)
+    (define-key km (kbd "TAB")   #'flex-indent-command)
+    km))
 
 ;;;###autoload
 (define-derived-mode flex-mode c-mode "Flex"

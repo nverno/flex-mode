@@ -12,9 +12,9 @@
 
 %%
 
-[a-zA-Z]+  { words++; chars += strlen(yytext); }
-\n         { chars++; lines++; }
-.          { chars++; }
+[a-zA-Z]+           { words++; chars += strlen(yytext); }
+\n                  { chars++; lines++; }
+.                   { chars++; }
 
 %%
 
