@@ -62,8 +62,20 @@
 ;; User Functions
 
 (defun flex-compile ()
-  "Compile"
-  (interactive))
+  (interactive)
+  (let* ((base (file-name-nondirectory
+                (file-name-sans-extension
+                 buffer-file-name)))
+         (compile-command
+          (format
+           (eval-when-compile
+             (concat "flex %s && "
+                     "g++ -g -Wall -Wno-unused -Wno-write-strings "
+                     "-o %s%s lex.yy.c -lfl"))
+           buffer-file-name base
+           (if (eq system-type 'windows-nt) ".exe" ".out")))
+         (compilation-read-command nil))
+    (call-interactively 'compile)))
 
 (defun flex-compile-run ()
   "Compile and run on test file."
@@ -84,23 +96,24 @@
   (interactive)
   (re-search-backward "%[%}{]" nil 'move))
 
-(define-key flex-mode-map (kbd "M-N") 'flex-next-section)
-(define-key flex-mode-map (kbd "M-P") 'flex-previous-section)
-
 ;;--- Major Mode -----------------------------------------------------
 
 ;; Menu
 (defvar flex-menu
   '("Flex"
-    ["Compile" flex-compile]
-    ["Align Declarations" flex-align-decls]
-    ["Compile and Run" flex-compile-and-run]))
+    ["Compile" flex-compile t]
+    ["Edit" flex-src-edit t]
+    ["Align Declarations" flex-align-decls t]
+    ["Compile and Run" flex-compile-and-run t]))
 
 ;; Map
 (defvar flex-mode-map
   (let ((km (make-sparse-keymap)))
     (easy-menu-define nil km nil flex-menu)
     (define-key km (kbd "C-c '") #'flex-src-edit)
+    (define-key km (kbd "M-N")   #'flex-next-section)
+    (define-key km (kbd "M-P")   #'flex-previous-section)
+    (define-key km (kbd "<f5>")  #'flex-compile)
     (define-key km "{"           #'self-insert-command)
     (define-key km "}"           #'self-insert-command)
     (define-key km (kbd "TAB")   #'flex-indent-command)

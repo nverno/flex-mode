@@ -1,7 +1,8 @@
 *~
 *.elc
 *.o
+*.out
 *.exe
 *.s
-lex.y.cc
+lex.yy.c
 lexer*
