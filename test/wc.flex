@@ -34,7 +34,7 @@ int main(int argc, char** argv)
       perror(argv[i]);
       return 1;
     }
-    
+
     yyrestart(f); // restart on new file
     yylex();
     fclose(f);

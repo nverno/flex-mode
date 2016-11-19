@@ -46,20 +46,15 @@
   :type 'integer
   :group 'flex)
 
-;; ------------------------------------------------------------
+;; -------------------------------------------------------------------
 
 (defvar flex-decls-opener "%{")
 (defvar flex-decls-closer "%}")
 (defvar flex-grammar-delim "%%")
 
-;; Font-locking
-
-;; Indentation
-
 (defalias 'flex-indent-command #'c-indent-command)
 
-;; ------------------------------------------------------------
-;; User Functions
+;;--- User Functions -------------------------------------------------
 
 (defun flex-compile ()
   (interactive)
@@ -77,12 +72,12 @@
          (compilation-read-command nil))
     (call-interactively 'compile)))
 
+;; Compile and run on test file.
 (defun flex-compile-run ()
-  "Compile and run on test file."
   (interactive))
 
+;; Align declarations in region.
 (defun flex-align-region-dwim (&optional _arg)
-  "Align declarations in region."
   (interactive))
 
 ;;; Navigate
