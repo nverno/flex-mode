@@ -119,6 +119,7 @@
   "Major mode for editing flex files derived from `c-mode'.\n
 \\{flex-mode-map}"
   (setq-local comment-start "/* ")
+  (setq-local comment-end " */")
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
 
   ;; Indentation
