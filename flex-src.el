@@ -55,7 +55,7 @@
 ;;;###autoload
 (defun flex-src-edit (&optional start end)
   "Edit source code in another buffer, inserting at point when 
-finihsed."
+finished."
   (interactive
    (if (region-active-p)
        (list (region-beginning) (region-end))))
@@ -65,7 +65,7 @@ finihsed."
       (delete-region start end))
     (flex-src--buffer flex-src-major-mode code)))
 
-;;--- Minor Mode -----------------------------------------------------
+;;——— Minor Mode —————————————————————————————————————————————————————
 
 (defun flex-src-exit ()
   "Close editing buffer, inserting code into source buffer."

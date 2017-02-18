@@ -54,7 +54,7 @@
 
 (defalias 'flex-indent-command #'c-indent-command)
 
-;;--- User Functions -------------------------------------------------
+;;——— Commands ———————————————————————————————————————————————————————
 
 (defun flex-compile ()
   (interactive)
@@ -91,7 +91,7 @@
   (interactive)
   (re-search-backward "%[%}{]" nil 'move))
 
-;;--- Major Mode -----------------------------------------------------
+;;——— Major Mode —————————————————————————————————————————————————————
 
 ;; Menu
 (defvar flex-menu
