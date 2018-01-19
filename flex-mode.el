@@ -73,7 +73,7 @@
     (call-interactively 'compile)))
 
 ;; Compile and run on test file.
-(defun flex-compile-run ()
+(defun flex-compile-and-run ()
   (interactive))
 
 ;; Align declarations in region.
