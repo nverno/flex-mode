@@ -52,7 +52,7 @@
 (defvar flex-decls-closer "%}")
 (defvar flex-grammar-delim "%%")
 
-(defalias 'flex-indent-command #'c-indent-command)
+(defalias 'flex-indent-command #'c-indent-line-or-region)
 
 ;;——— Commands ———————————————————————————————————————————————————————
 
@@ -138,7 +138,7 @@
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist
-             '("\\.\\(flex\\|\\(l\\(pp\\|l\\|xx\\|\\+\\+\\)\\)\\)$" .
+             '("\\.\\(f?lex\\|\\(l\\(pp\\|l\\|xx\\|\\+\\+\\)\\)\\)$" .
                flex-mode))
 
 (provide 'flex-mode)
