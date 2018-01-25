@@ -81,6 +81,7 @@
   (interactive))
 
 ;;; Navigate
+;; FIXME: add markers to regions
 
 ;; jump to next section
 (defun flex-next-section ()
@@ -106,8 +107,8 @@
   (let ((km (make-sparse-keymap)))
     (easy-menu-define nil km nil flex-menu)
     (define-key km (kbd "C-c '") #'flex-src-edit)
-    (define-key km (kbd "M-N")   #'flex-next-section)
-    (define-key km (kbd "M-P")   #'flex-previous-section)
+    (define-key km (kbd "M-s-n") #'flex-next-section)
+    (define-key km (kbd "M-s-p") #'flex-previous-section)
     (define-key km (kbd "<f5>")  #'flex-compile)
     (define-key km "{"           #'self-insert-command)
     (define-key km "}"           #'self-insert-command)
