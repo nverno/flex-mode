@@ -46,15 +46,52 @@
   :type 'integer
   :group 'flex)
 
-;; -------------------------------------------------------------------
-
 (defvar flex-decls-opener "%{")
 (defvar flex-decls-closer "%}")
-(defvar flex-grammar-delim "%%")
+(defvar flex-rules-delim "%%")
+(defvar flex-rules-column 25)
+
+;;--- Indentation ----------------------------------------------------
 
 (defalias 'flex-indent-command #'c-indent-line-or-region)
 
-;;——— Commands ———————————————————————————————————————————————————————
+;; move passed regex
+(defun flex-skip-regex ()
+  (catch 'done
+   (while (not (or (eolp)))
+     (skip-syntax-forward "\"")         ;skip strings
+     (and (memq (char-after) '(? ?\t))
+          (throw 'done t))
+     (if (not (eq (char-after) ?\[))
+         (forward-char)
+       ;; FIXME: ']' can be escaped -- eg. with '^' preceding
+       (skip-chars-forward "^]" (line-end-position))))))
+
+;; indent C code on continuation line in rules section
+(defun flex-indent-rules-line ()
+  (interactive)
+  (if (zerop (current-indentation))     ;regex at bol, indent to rules col
+      (save-excursion
+        (beginning-of-line)
+        (flex-skip-regex)
+        (delete-horizontal-space)
+        (indent-to-column flex-rules-column))
+    ;; otherwise, indent using C indent command and add
+    ;; additional indent afterward
+    (c-indent-line)
+    (let ((ci (current-indentation)))
+      (when (< ci flex-rules-column)
+        (save-excursion
+          (back-to-indentation)
+          (indent-to (+ ci flex-rules-column)))))))
+
+(defun flex-rules-back-to-indentation ()
+  (interactive)
+  (if (zerop (current-indentation))
+      (move-to-column flex-rules-column t)
+    (back-to-indentation)))
+
+;;--- Commands -------------------------------------------------------
 
 (defun flex-compile ()
   (interactive)
@@ -92,27 +129,32 @@
   (interactive)
   (re-search-backward "%[%}{]" nil 'move))
 
-;;——— Major Mode —————————————————————————————————————————————————————
+;;--- Major Mode -----------------------------------------------------
+
 
 ;; Menu
 (defvar flex-menu
   '("Flex"
+    ["Edit C source" flex-src-edit t]
+    ["Align rules" flex-align-rules t]
+    ["Indent rules line" flex-indent-rules-line t]
+    "---"
     ["Compile" flex-compile t]
-    ["Edit" flex-src-edit t]
-    ["Align Declarations" flex-align-decls t]
     ["Compile and Run" flex-compile-and-run t]))
 
 ;; Map
 (defvar flex-mode-map
   (let ((km (make-sparse-keymap)))
     (easy-menu-define nil km nil flex-menu)
-    (define-key km (kbd "C-c '") #'flex-src-edit)
-    (define-key km (kbd "M-s-n") #'flex-next-section)
-    (define-key km (kbd "M-s-p") #'flex-previous-section)
-    (define-key km (kbd "<f5>")  #'flex-compile)
-    (define-key km "{"           #'self-insert-command)
-    (define-key km "}"           #'self-insert-command)
-    (define-key km (kbd "TAB")   #'flex-indent-command)
+    (define-key km (kbd "C-c '")     #'flex-src-edit)
+    (define-key km (kbd "M-s-n")     #'flex-next-section)
+    (define-key km (kbd "M-s-p")     #'flex-previous-section)
+    (define-key km (kbd "<f5>")      #'flex-compile)
+    (define-key km (kbd "<backtab>") #'flex-indent-rules-line)
+    (define-key km (kbd "M-M")       #'flex-rules-back-to-indentation)
+    (define-key km "{"               #'self-insert-command)
+    (define-key km "}"               #'self-insert-command)
+    (define-key km (kbd "TAB")       #'flex-indent-command)
     km))
 
 ;;;###autoload
