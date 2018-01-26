@@ -26,9 +26,7 @@
 
 ;;; Commentary:
 ;;; Code:
-
-;; column to align c code in rules section
-(defvar flex-src-align-column 20)
+(require 'flex-mode)
 
 ;; major mode for src code editing buffer
 (defvar flex-src-major-mode 'c++-mode)
@@ -85,7 +83,7 @@ finished."
     (goto-char start)
     (while (not (or (eobp)
                     (> (line-number-at-pos) end)))
-      (indent-to flex-src-align-column)
+      (indent-to flex-rules-column)
       (forward-line 1))))
 
 (defvar flex-src-mode-map
