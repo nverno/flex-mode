@@ -139,10 +139,11 @@
 
 (defun flex-indent-command ()
   (interactive)
-  (if (not (get-text-property (point) 'flex-rules))
-      (call-interactively 'c-indent-line-or-region)
-    (call-interactively 'flex-indent-rules-line-or-region)
-    (flex-rules-back-to-indentation)))
+  (if (eq last-command this-command)
+      (flex-rules-back-to-indentation)
+    (if (not (get-text-property (point) 'flex-rules))
+        (call-interactively 'c-indent-line-or-region)
+      (call-interactively 'flex-indent-rules-line-or-region))))
 
 ;;--- Commands -------------------------------------------------------
 
