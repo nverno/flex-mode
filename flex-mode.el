@@ -58,7 +58,7 @@
 ;; indenting the following code fragments as C code treating 
 ;; `flex-rules-indent-column' as if it were the first column.
 
-(defun flex-rules-mark-region ()
+(defun flex--mark-rules-region ()
   (save-excursion
     (goto-char (point-min))
     (when (ignore-errors (search-forward "%%" nil))
@@ -69,7 +69,7 @@
 (defun flex-insert-% ()
   (interactive)
   (and (eq (char-before) ?%)
-       (flex-rules-mark-region))
+       (flex--mark-rules-region))
   (self-insert-command 1))
 
 ;; move passed regex
@@ -84,15 +84,22 @@
        ;; FIXME: ']' can be escaped -- eg. with '^' preceding
        (skip-chars-forward "^]" (line-end-position))))))
 
-;; indent C code on continuation line in rules section
-(defun flex-rules-indent-line ()
+;; indent line with rules section (b/w '%%' '%%')
+(defun flex-indent-rules-line ()
   (interactive)
-  (if (zerop (current-indentation))     ;regex at bol, indent to rules col
-      (save-excursion
-        (beginning-of-line)
-        (flex-skip-regex)
-        (delete-horizontal-space)
-        (indent-to-column flex-rules-indent-column))
+  (cond
+   ((nth 4 (syntax-ppss))                        ;in comment
+    (indent-line-to 2))
+   ((and (looking-at-p "\\s-*\\(/\\*\\|\\*/\\)") ;start/end comment
+         (looking-back "^\\s-*" (line-beginning-position)))
+    (indent-line-to 1))
+   ((zerop (current-indentation))                ;regex at bol, indent to rules col
+    (save-excursion
+      (beginning-of-line)
+      (flex-skip-regex)
+      (delete-horizontal-space)
+      (indent-to-column flex-rules-indent-column)))
+   (t
     ;; otherwise, indent using C indent command and add
     ;; additional indent afterward
     (c-indent-line)
@@ -100,17 +107,29 @@
       (when (< ci flex-rules-indent-column)
         (save-excursion
           (back-to-indentation)
-          (indent-to (+ ci flex-rules-indent-column)))))))
+          (indent-to (+ ci flex-rules-indent-column))))))))
 
-(defun flex-rules-indent-line-or-region (beg end)
-  (interactive "r")
-  (if (not (region-active-p))
-      (flex-rules-indent-line)
-    (save-excursion
-      (goto-char beg)
-      (while (< (point) end)
-        (flex-rules-indent-line)
-        (forward-line)))))
+;; Indent the entire rules section
+(defun flex-indent-rules-section ()
+  (interactive)
+  (save-mark-and-excursion
+    (goto-char (point-min))
+    (when (ignore-errors (search-forward "%%" nil))
+      (push-mark (point))
+      (when (ignore-errors (search-forward "%%" nil))
+        (flex-indent-rules-line-or-region 'region)))))
+
+(defun flex-indent-rules-line-or-region (&optional region)
+  (interactive (list (region-active-p)))
+  (if (not region)
+      (flex-indent-rules-line)
+    (let ((beg (region-beginning))
+          (end (region-end)))
+     (save-excursion
+       (goto-char beg)
+       (while (< (point) end)
+         (flex-indent-rules-line)
+         (forward-line))))))
 
 (defun flex-rules-back-to-indentation ()
   (interactive)
@@ -122,7 +141,7 @@
   (interactive)
   (if (not (get-text-property (point) 'flex-rules))
       (call-interactively 'c-indent-line-or-region)
-    (call-interactively 'flex-rules-indent-line-or-region)
+    (call-interactively 'flex-indent-rules-line-or-region)
     (flex-rules-back-to-indentation)))
 
 ;;--- Commands -------------------------------------------------------
@@ -169,7 +188,7 @@
 (defvar flex-menu
   '("Flex"
     ["Edit C source" flex-src-edit t]
-    ["Indent rules" flex-rules-indent-line-or-region t]
+    ["Indent entire rules section" flex-indent-rules-section t]
     "---"
     ["Compile" flex-compile t]
     ["Compile and Run" flex-compile-and-run t]))
@@ -185,7 +204,7 @@
     (define-key km (kbd "M-s-n")     #'flex-next-section)
     (define-key km (kbd "M-s-p")     #'flex-previous-section)
     (define-key km (kbd "<f5>")      #'flex-compile)
-    (define-key km (kbd "<backtab>") #'flex-rules-indent-line-or-region)
+    (define-key km (kbd "<backtab>") #'flex-indent-rules-line-or-region)
     (define-key km (kbd "M-M")       #'flex-rules-back-to-indentation)
     (define-key km (kbd "TAB")       #'flex-indent-command)
     km))
@@ -210,7 +229,10 @@
   (c-toggle-electric-state -1)
   (c-toggle-auto-hungry-state -1)
   (c-toggle-auto-newline -1)
-  (c-toggle-hungry-state -1))
+  (c-toggle-hungry-state -1)
+
+  ;; mark the rules region in buffer
+  (flex---mark-rules-region))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist
