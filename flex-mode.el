@@ -233,7 +233,7 @@
   (c-toggle-hungry-state -1)
 
   ;; mark the rules region in buffer
-  (flex---mark-rules-region))
+  (flex--mark-rules-region))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist
