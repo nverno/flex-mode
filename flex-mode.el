@@ -46,8 +46,14 @@
   :type 'integer
   :group 'flex)
 
-(defvar flex-rules-indent-column 25
-  "Column to start indentation for code fragments in rules section.")
+(defvar flex-rules-comment-offset 1
+  "Indent offset for start of comments in rules.")
+
+(defvar flex-rules-continuation-offset 8
+  "Indent offset for continuation lines of code in the rules section.")
+
+(defvar flex-rules-initial-offset 32
+  "Indent offset for code following a regex patterin in rules section.")
 
 ;;--- Indentation ----------------------------------------------------
 ;;
@@ -56,7 +62,7 @@
 ;; Text in the region having the 'flex-rules property will be indented
 ;; by skipping any regex that occurs at the beginning of a line and
 ;; indenting the following code fragments as C code treating 
-;; `flex-rules-indent-column' as if it were the first column.
+;; `flex-rules-initial-offset' as if it were the first column.
 
 (defun flex--mark-rules-region ()
   (save-excursion
@@ -89,25 +95,25 @@
   (interactive)
   (cond
    ((nth 4 (syntax-ppss))                        ;in comment
-    (indent-line-to 2))
+    (indent-line-to (1+ flex-rules-comment-offset)))
    ((and (looking-at-p "\\s-*\\(/\\*\\|\\*/\\)") ;start/end comment
          (looking-back "^\\s-*" (line-beginning-position)))
-    (indent-line-to 1))
+    (indent-line-to flex-rules-comment-offset))
    ((zerop (current-indentation))                ;regex at bol, indent to rules col
     (save-excursion
       (beginning-of-line)
       (flex-skip-regex)
       (delete-horizontal-space)
-      (indent-to-column flex-rules-indent-column)))
+      (indent-to-column flex-rules-initial-offset)))
    (t
     ;; otherwise, indent using C indent command and add
     ;; additional indent afterward
     (c-indent-line)
     (let ((ci (current-indentation)))
-      (when (< ci flex-rules-indent-column)
+      (when (< ci flex-rules-continuation-offset)
         (save-excursion
           (back-to-indentation)
-          (indent-to (+ ci flex-rules-indent-column))))))))
+          (indent-to (+ ci flex-rules-continuation-offset))))))))
 
 ;; Indent the entire rules section
 (defun flex-indent-rules-section ()
@@ -134,7 +140,7 @@
 (defun flex-rules-back-to-indentation ()
   (interactive)
   (if (zerop (current-indentation))
-      (move-to-column flex-rules-indent-column t)
+      (move-to-column flex-rules-initial-offset t)
     (back-to-indentation)))
 
 (defun flex-indent-command ()
