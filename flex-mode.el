@@ -217,7 +217,7 @@
     km))
 
 ;;;###autoload
-(define-derived-mode flex-mode c++-mode "Flex"
+(define-derived-mode flex-mode c-mode "Flex"
   "Major mode for editing flex files derived from `c-mode'.\n
 \\{flex-mode-map}"
   (setq-local comment-start "/* ")
