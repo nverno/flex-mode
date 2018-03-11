@@ -83,7 +83,7 @@ finished."
     (goto-char start)
     (while (not (or (eobp)
                     (> (line-number-at-pos) end)))
-      (indent-to flex-rules-column)
+      (indent-to flex-rules-continuation-offset)
       (forward-line 1))))
 
 (defvar flex-src-mode-map
