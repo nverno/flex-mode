@@ -1,4 +1,4 @@
-;;; flex-mode ---  -*- lexical-binding: t; -*-
+;;; flex-mode --- Major mode Flex file editing -*- lexical-binding: t; -*-
 
 ;; This is free and unencumbered software released into the public domain.
 
