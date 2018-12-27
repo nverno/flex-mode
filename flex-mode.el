@@ -55,7 +55,8 @@
 (defvar flex-rules-initial-offset 32
   "Indent offset for code following a regex patterin in rules section.")
 
-;;--- Indentation ----------------------------------------------------
+;; -------------------------------------------------------------------
+;;; Indentation 
 ;;
 ;; When inserting '%' and preceded by another '%', attempt to add text
 ;; properties to the rules section that will be used for special indentation.
@@ -151,7 +152,8 @@
         (call-interactively 'c-indent-line-or-region)
       (call-interactively 'flex-indent-rules-line-or-region))))
 
-;;--- Commands -------------------------------------------------------
+;; -------------------------------------------------------------------
+;;; Commands 
 
 (defun flex-compile ()
   (interactive)
@@ -189,7 +191,8 @@
   (interactive)
   (re-search-backward "%[%}{]" nil 'move))
 
-;;--- Major Mode -----------------------------------------------------
+;; -------------------------------------------------------------------
+;;; Major-mode 
 
 ;; Menu
 (defvar flex-menu
