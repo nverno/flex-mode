@@ -1,7 +1,8 @@
-;;; flex-mode --- Major mode Flex file editing -*- lexical-binding: t; -*-
+;;; flex-mode.el --- Major mode Flex file editing -*- lexical-binding: t; -*-
 
 ;; This is free and unencumbered software released into the public domain.
 
+;; Last modified: <2019-02-14 17:02:58>
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/flex-mode
 ;; Package-Requires: 
@@ -64,6 +65,9 @@
 ;; by skipping any regex that occurs at the beginning of a line and
 ;; indenting the following code fragments as C code treating 
 ;; `flex-rules-initial-offset' as if it were the first column.
+
+;;; FIXME: use markers instead?? possibly a timer or watch buffer modification
+;;         ticks? Currently the region is inaccurate too often.
 
 (defun flex--mark-rules-region ()
   (save-excursion
