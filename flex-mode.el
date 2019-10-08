@@ -2,7 +2,6 @@
 
 ;; This is free and unencumbered software released into the public domain.
 
-;; Last modified: <2019-02-14 17:02:58>
 ;; Author: Noah Peart <noah.v.peart@gmail.com>
 ;; URL: https://github.com/nverno/flex-mode
 ;; Package-Requires: 
@@ -31,8 +30,7 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'derived))
+(eval-when-compile (require 'derived))
 (require 'cc-mode)
 (autoload 'flex-src-edit "flex-src")
 
