@@ -93,7 +93,7 @@ finished."
 
 (define-minor-mode flex-src-mode
   "Flex source editing minor mode."
-  nil "FlexSrc")
+  :lighter " FlexSrc")
 
 (provide 'flex-src)
 ;;; flex-src.el ends here
